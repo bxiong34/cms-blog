@@ -1,0 +1,34 @@
+h4 {
+    text-align: right;
+}
+
+h2 {
+    background-color: #a989a9;
+    padding: 1%;
+    border-radius: 10px;
+}
+
+nav {
+    margin-left: 5%;
+}
+
+a {
+    margin-left: 2%;
+    margin-right: 2%;
+    font-size: 1.2rem;
+}
+
+p {
+    line-height: 1.5rem;
+}
+
+.card-body {
+    background-color: #d8bfd8;
+    margin: 1% 15% 1% 15%;
+    padding: 0% 2% 0.5% 2%;
+    border-radius: 15px;
+}
+
+.header {
+    font-weight: bolder;
+}
