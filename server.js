@@ -1,8 +1,8 @@
+const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
 const sequelizeStore = require('connect-session-sequelize')(session.Store);
-const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -30,17 +30,9 @@ app.set('view engine', 'handlebars');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(routes);
-
-// Other app.use middleware
-app.use(express.static(path.join(__dirname, "client", "build")));
-
-// Right before your app.listen(), add this:
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
-
 
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log('Now listening'));
