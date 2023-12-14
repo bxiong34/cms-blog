@@ -1,0 +1,12 @@
+<!-- If the user is logged in, render the painting content -->
+{{#if loggedIn}}
+<section class="blogs">
+  <div class="blog-details">
+    <h3>{{blog.title}}</h3>
+    <p>{{blog.author}} {{blog.date}}</p>
+  </div>
+</section>
+<!-- Otherwise, provide a link to login -->
+{{else}}
+<a href="/login">You must login first to view blogs</a>
+{{/if}}
