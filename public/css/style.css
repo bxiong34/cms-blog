@@ -1,15 +1,27 @@
+:root {
+    --primary: #eaf2fb;
+    --secondary: #d7e0ea;
+    --tertiary: #d0e0ed;
+}
+
+h1 {
+    margin-left: 10%;
+}
+
+h3 {
+    padding-left: 1%;
+    flex-wrap: wrap;
+}
+
 h4 {
-    text-align: right;
+    padding-left: 1%;
+    font-weight: 100;
+    flex-wrap: wrap;
 }
 
-h2 {
-    background-color: #a989a9;
-    padding: 1%;
-    border-radius: 10px;
-}
-
+/* navbar */
 nav {
-    margin-left: 5%;
+    margin-left: 8.5%;
 }
 
 a {
@@ -20,15 +32,61 @@ a {
 
 p {
     line-height: 1.5rem;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-bottom: 2%;
+}
+
+footer {
+    padding: 2%;
+}
+
+html {
+    background-color: var(--primary);
+}
+
+form {
+    line-height: 2rem;
 }
 
 .card-body {
-    background-color: #d8bfd8;
-    margin: 1% 15% 1% 15%;
-    padding: 0% 2% 0.5% 2%;
-    border-radius: 15px;
+    margin: 0% 10% 0% 10%;
+    border-radius: 25px;
+    border-style: solid;
+    border-color: var(--secondary);
+    border-width: 3px;
 }
 
-.header {
+.title {
     font-weight: bolder;
+}
+
+.head-title {
+    flex-wrap: wrap;
+    display: inline-flex;
+    justify-content: space-between;
+    background-color:var(--tertiary);
+    padding: 1%;
+    border-radius: 15px 15px 0px 0px;
+}
+
+/* login */
+.in-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3%;
+}
+
+.login-card {
+    background-color: var(--secondary);
+    padding: 10%;
+    border-radius: 15px;
+    margin-right: 2%;
+}
+
+.signup-card {
+    background-color: var(--tertiary);
+    padding: 10%;
+    border-radius: 15px;
 }
