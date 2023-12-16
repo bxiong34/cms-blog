@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { User } = require('../../models');
 const withAuth = require('../../utils/auth');
+const bcrypt = require('bcrypt');
 
 // CREATE new user
 router.post('/', async (req, res) => {
@@ -38,8 +39,12 @@ router.post('/login', withAuth, async (req, res) => {
       return;
     }
 
-    const validPassword = await dbUserData.checkPassword(req.body.password);
-
+    //compare pass and hash pass
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      dbUserData.password
+    );
+    //if it doesn't match, return error
     if (!validPassword) {
       res
         .status(400)
@@ -49,7 +54,7 @@ router.post('/login', withAuth, async (req, res) => {
 
     req.session.save(() => {
       req.session.loggedIn = true;
-
+      //if pass and hash pass matches, return logged in message
       res
         .status(200)
         .json({ user: dbUserData, message: 'You are now logged in!' });
