@@ -3,6 +3,20 @@ module.exports = {
     return date.toLocaleTimeString();
   },
   format_date: (date) => {
-    return `${new Date(date).getMonth() + 1}/${new Date(date).getDate()}`;
+     // format date as Month DD, YYYY
+     return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  },
+  today_date: () => {
+    const today = new Date();
+    // format today's date as Month DD, YYYY
+    return today.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
   },
 };

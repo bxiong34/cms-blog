@@ -1,41 +1,94 @@
 const router = require('express').Router();
-const { Blogs, Dashboard, User } = require('../models');
+const { User, Blog, Dashboard } = require('../models');
 const withAuth = require('../utils/auth');
 
-//if user is logged in, show all blogs
-router.get('/', withAuth, async (req, res) => {
+//get all blogs for homepage
+router.get('/', async (req, res) => {
   try {
-    const blogData = await Blogs.findAll({
+    const blogData = await Blog.findAll({
       include: [
         {
-          model: Dashboard,
-          attributes: ['title', 'date'],
+          model: User,
+          attributes: ["name"],
         },
       ],
     });
 
-    const blog = blogData.map((blogs) =>
-      blogs.get({ plain: true })
-    );
-    
-    res.render('homepage', {
-      blog,
-      loggedIn: req.session.loggedIn,
+    const blogs = blogData.map((blog) => blog.get({ plain: true }));
+    const userId = req.session.user_id;
+
+    // find logged in user's info
+    const userData = await User.findByPk(userId, {
+      attributes: ["name"],
     });
+
+    if (!userData) {
+      return res.redirect("/login");
+    }
+
+    res.render('homepage', {
+      blogs,
+      name: userData.name,
+      logged_in: req.session.logged_in,
+    });
+
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
   }
 });
 
-//if user is logged in, redirect to homepage
-router.get('/login', (req, res) => {
-  if (req.session.loggedIn) {
-    res.redirect('/');
-    return;
-  }
+// use withAuth middleware to prevent access to dashboard route
+router.get('/dashboard', withAuth, async (req, res) => {
+  try {
+    // Find the logged in user based on the session ID
+    const userData = await User.findByPk(req.session.user_id, {
+      attributes: { exclude: ['password'] },
+      include: [{ model: Blog }],
+    });
 
-  res.render('login');
+    const user = userData.get({ plain: true });
+
+    res.render('dashboard', {
+      ...user,
+      logged_in: true
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
-module.exports = router;
+//get one blog from dashboard
+router.get('dashboard/:id', async (req, res) => {
+  //if user is not logged in, redirect the user to the login page
+  try {
+    const blogData = await Dashboard.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          attributes: ["name"],
+        },
+      ],
+    });
+
+      const blog = blogData.get({ plain: true });
+      res.render('dashboard', {
+        ...blog, 
+        logged_in: req.session.logged_in });
+  } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+  }
+});
+
+//if user is logged in, redirect to homepage
+router.get('/login', (req, res) => {
+    if (req.session.logged_in) {
+      res.redirect('/');
+      return;
+    }
+  
+    res.render('login');
+  });
+
+  module.exports = router;

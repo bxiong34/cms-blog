@@ -1,28 +1,28 @@
 const User = require('./User');
-const Blogs = require('./Blogs');
+const Blog = require('./Blog');
 const Dashboard = require('./Dashboard');
 
 //dashboard can have many blogs
-Dashboard.hasMany(Blogs, {
-    foreignKey: 'blogs_id',
+Dashboard.hasMany(Blog, {
+    foreignKey: 'blog_id',
 });
 
 //a user can have many blogs
-User.hasMany(Blogs, {
-    foreignKey: 'blogs_id',
+User.hasMany(Blog, {
+    foreignKey: 'blog_id',
 });
 
 //a blog belongs to a single user
-Blogs.belongsTo(User, {
-  foreignKey: 'blogs_id',
+Blog.belongsTo(User, {
+  foreignKey: 'blog_id',
 });
 
-Blogs.belongsTo(Dashboard, {
-    foreignKey:'blogs_id',
+Blog.belongsTo(Dashboard, {
+    foreignKey:'blog_id',
 });
 
 Dashboard.belongsTo(User, {
-    foreignKey:'blogs_id',
+    foreignKey:'blog_id',
 });
 
-module.exports = { User, Blogs, Dashboard };
+module.exports = { User, Blog, Dashboard };

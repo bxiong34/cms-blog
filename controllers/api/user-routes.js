@@ -1,78 +1,66 @@
-const router = require('express').Router();
-const { User } = require('../../models');
-const withAuth = require('../../utils/auth');
-const bcrypt = require('bcrypt');
+const router = require("express").Router();
+const { User } = require("../../models");
 
-// CREATE new user
-router.post('/', async (req, res) => {
+// route to create new user
+router.post("/", async (req, res) => {
   try {
-    const dbUserData = await User.create({
-      username: req.body.username,
+    const userData = await User.create({
+      name: req.body.username,
       email: req.body.email,
       password: req.body.password,
     });
 
     req.session.save(() => {
-      req.session.loggedIn = true;
+      req.session.user_id = userData.id;
+      req.session.logged_in = true;
 
-      res.status(200).json(dbUserData);
+      res.status(200).json(userData);
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
+    res.status(400).json({ error: errorMessage });
   }
 });
 
-// Login
-router.post('/login', withAuth, async (req, res) => {
+// route to find an existing user
+router.post("/login", async (req, res) => {
   try {
-    const dbUserData = await User.findOne({
-      where: {
-        email: req.body.email,
-      },
-    });
+    const userData = await User.findOne({ where: { email: req.body.email } });
 
-    if (!dbUserData) {
+    if (!userData) {
       res
         .status(400)
-        .json({ message: 'Incorrect email or password. Please try again!' });
+        .json({ message: "Incorrect email or password, please try again" });
       return;
     }
 
-    //compare pass and hash pass
-    const validPassword = await bcrypt.compare(
-      req.body.password,
-      dbUserData.password
-    );
-    //if it doesn't match, return error
+    const validPassword = await userData.checkPassword(req.body.password);
+
     if (!validPassword) {
       res
         .status(400)
-        .json({ message: 'Incorrect email or password. Please try again!' });
+        .json({ message: "Incorrect email or password, please try again" });
       return;
     }
 
     req.session.save(() => {
-      req.session.loggedIn = true;
-      //if pass and hash pass matches, return logged in message
-      res
-        .status(200)
-        .json({ user: dbUserData, message: 'You are now logged in!' });
+      req.session.user_id = userData.id;
+      req.session.logged_in = true;
+
+      res.json({ user: userData, message: "You are now logged in!" });
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
+    res.status(400).json(err);
   }
 });
 
-// Logout
-router.post('/logout', (req, res) => {
-  if (req.session.loggedIn) {
+// route to destroy session when user logs out
+router.post("/logout", (req, res) => {
+  if (req.session.logged_in) {
     req.session.destroy(() => {
-      res.status(204).end();
+      res.status(200).end();
     });
   } else {
-    res.status(404).end();
+    res.status(400).end();
   }
 });
 

@@ -1,3 +1,9 @@
-{{#each blog as |blogs|}}
-{{> blog-details}}
+{{#each blogs as |blog|}}
+<section class="blogs">
+  <div class="blog-details">
+    <h3>{{blog.title}}</h3>
+    <p>By <strong>{{blog.author}}</strong> on {{format_date blog.date}}</p>
+    <p>{{blog.content}}</p>
+  </div>
+</section>
 {{/each}}
